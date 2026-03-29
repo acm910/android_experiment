@@ -8,6 +8,8 @@ data class NewsDetails(
     val author: String,
     val publishTime: String,
     val content: String,
-    val comments: List<String>
+    val comments: List<String>,
+    val imageLocalPath: String? = null,
+    val imageUrl: String? = null
 ) : Serializable
 

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">experiment</string>
+    <string name="main_bar_title">test</string>
+    <string name="news_bar_title">testnews</string>
+    <string name="action_submit">投稿</string>
+    <string name="submission_title">投稿</string>
+    <string name="submission_placeholder">投稿页面建设中</string>
 </resources>

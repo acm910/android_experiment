@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Experiment">
         <activity
+            android:name=".SubmissionActivity"
+            android:exported="false" />
+        <activity
             android:name=".NewsActivity"
             android:exported="false" />
         <activity
