@@ -4,5 +4,19 @@
     <string name="news_bar_title">testnews</string>
     <string name="action_submit">投稿</string>
     <string name="submission_title">投稿</string>
-    <string name="submission_placeholder">投稿页面建设中</string>
+    <string name="submission_section_desc">请填写新闻稿件信息，提交后进入审核流程</string>
+    <string name="submission_hint_title">新闻标题（必填）</string>
+    <string name="submission_hint_author">作者（必填）</string>
+    <string name="submission_hint_publish_time">发布时间（必填，例如 2026-03-29 18:30）</string>
+    <string name="submission_hint_content">正文内容（必填）</string>
+    <string name="submission_hint_comments">评论（可选，一行一条）</string>
+    <string name="submission_hint_local_path">图片本地路径（可选）</string>
+    <string name="submission_hint_image_url">图片 URL（可选）</string>
+    <string name="submission_action_submit_review">提交审核</string>
+    <string name="submission_validation_required">请先填写标题、作者、发布时间和正文</string>
+    <string name="submission_confirm_title">确认提交</string>
+    <string name="submission_confirm_message">确定要提交这篇文章进行审核吗？</string>
+    <string name="submission_confirm_cancel">取消</string>
+    <string name="submission_confirm_submit">确认提交</string>
+    <string name="submission_success">提交成功：%1$s（评论 %2$d 条）</string>
 </resources>
