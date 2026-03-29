@@ -11,7 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.experiment.data.NewsMockData
-import com.example.experiment.pojo.NewsDetails
+import com.example.experiment.pojo.VO.NewsDetailsVO
 
 class NewsActivity : AppCompatActivity() {
 
@@ -64,12 +64,12 @@ class NewsActivity : AppCompatActivity() {
         }
     }
 
-    private fun getNewsDetailsFromIntent(): NewsDetails? {
+    private fun getNewsDetailsFromIntent(): NewsDetailsVO? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getSerializableExtra(EXTRA_NEWS_DETAILS, NewsDetails::class.java)
+            intent.getSerializableExtra(EXTRA_NEWS_DETAILS, NewsDetailsVO::class.java)
         } else {
             @Suppress("DEPRECATION")
-            intent.getSerializableExtra(EXTRA_NEWS_DETAILS) as? NewsDetails
+            intent.getSerializableExtra(EXTRA_NEWS_DETAILS) as? NewsDetailsVO
         }
     }
 }

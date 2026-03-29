@@ -1,6 +1,6 @@
 package com.example.experiment.data
 
-import com.example.experiment.pojo.NewsDetails
+import com.example.experiment.pojo.VO.NewsDetailsVO
 
 object NewsMockData {
 
@@ -8,7 +8,7 @@ object NewsMockData {
     private const val TOTAL_COMMENT_PAGES = 3
 
     private val baseNewsList = listOf(
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_001",
             title = "AI 智能体框架进入规模化落地阶段",
             author = "AI Weekly",
@@ -17,7 +17,7 @@ object NewsMockData {
             comments = listOf("企业场景确实更容易看到 ROI。", "期待开源框架对接方案。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_002",
             title = "多模态模型在工业质检中精度提升",
             author = "智能制造观察",
@@ -26,7 +26,7 @@ object NewsMockData {
             comments = listOf("边缘端部署是关键。", "希望看到延迟数据。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_003",
             title = "AIGC 设计工具支持品牌风格锁定",
             author = "Design AI Lab",
@@ -35,7 +35,7 @@ object NewsMockData {
             comments = listOf("设计团队会更关注可控性。", "这对营销物料很有用。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_004",
             title = "国产推理芯片优化 Transformer 访存",
             author = "芯片前沿",
@@ -44,7 +44,7 @@ object NewsMockData {
             comments = listOf("硬件和框架协同很重要。", "期待公开基准测试。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_005",
             title = "AI 代码助手新增安全修复建议",
             author = "DevTools News",
@@ -53,7 +53,7 @@ object NewsMockData {
             comments = listOf("如果能自动加测试会更好。", "解释质量是核心。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_006",
             title = "教育行业上线个性化 AI 导学系统",
             author = "EdTech 报道",
@@ -62,7 +62,7 @@ object NewsMockData {
             comments = listOf("对薄弱项定位很实用。", "希望兼顾隐私合规。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_007",
             title = "RAG 检索增强方案降低幻觉率",
             author = "LLM 工程实践",
@@ -71,7 +71,7 @@ object NewsMockData {
             comments = listOf("知识库质量决定上限。", "重排序模型值得关注。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_008",
             title = "AI 医疗影像辅助读片进入试点",
             author = "HealthTech Daily",
@@ -80,7 +80,7 @@ object NewsMockData {
             comments = listOf("医疗场景需要更严格验证。", "临床闭环很关键。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_009",
             title = "端侧大模型压缩技术再升级",
             author = "Mobile AI",
@@ -89,7 +89,7 @@ object NewsMockData {
             comments = listOf("移动端体验会明显提升。", "电量影响也要关注。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_010",
             title = "AI 客服系统支持情绪识别路由",
             author = "服务智能化周刊",
@@ -98,7 +98,7 @@ object NewsMockData {
             comments = listOf("实际业务很需要。", "误判率需要公开。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_011",
             title = "开源视觉模型推出轻量版",
             author = "OpenCV 社区",
@@ -107,7 +107,7 @@ object NewsMockData {
             comments = listOf("边缘部署终于更友好。", "文档易用性很重要。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_012",
             title = "AI 文档助手支持企业知识图谱",
             author = "Knowledge Tech",
@@ -116,7 +116,7 @@ object NewsMockData {
             comments = listOf("跨部门协作会更高效。", "图谱维护成本要评估。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_013",
             title = "AI 驱动的视频摘要功能发布",
             author = "Media AI",
@@ -125,7 +125,7 @@ object NewsMockData {
             comments = listOf("效率提升很直观。", "希望支持多语言字幕。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_014",
             title = "金融风控模型引入可解释层",
             author = "FinAI Research",
@@ -134,7 +134,7 @@ object NewsMockData {
             comments = listOf("可解释性是落地门槛。", "合规团队会欢迎。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_015",
             title = "AI 翻译引擎强化术语一致性",
             author = "Language Tech",
@@ -143,7 +143,7 @@ object NewsMockData {
             comments = listOf("专业文档场景很需要。", "术语库管理要方便。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_016",
             title = "AI 语音克隆新增授权校验机制",
             author = "Voice AI 观察",
@@ -152,7 +152,7 @@ object NewsMockData {
             comments = listOf("这一步很有必要。", "希望行业形成统一标准。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_017",
             title = "自动驾驶仿真平台引入生成式场景",
             author = "AutoAI Insights",
@@ -161,7 +161,7 @@ object NewsMockData {
             comments = listOf("长尾场景覆盖很关键。", "仿真与实车闭环要打通。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_018",
             title = "AI 办公助手支持会议行动项追踪",
             author = "Productivity AI",
@@ -170,7 +170,7 @@ object NewsMockData {
             comments = listOf("跨工具同步很实用。", "希望支持更细粒度权限。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_019",
             title = "AI 图像生成强调版权来源追踪",
             author = "AIGC 合规简报",
@@ -179,7 +179,7 @@ object NewsMockData {
             comments = listOf("对商用场景是加分项。", "溯源标准值得统一。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_020",
             title = "智能推荐系统融合因果推断",
             author = "RecSys Journal",
@@ -188,7 +188,7 @@ object NewsMockData {
             comments = listOf("终于不只看短期点击。", "长期指标更有意义。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_021",
             title = "AI 搜索引擎支持答案溯源卡片",
             author = "Search AI Daily",
@@ -197,7 +197,7 @@ object NewsMockData {
             comments = listOf("这能缓解信任问题。", "来源质量也要把关。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_022",
             title = "AI 法务助手可自动识别风险条款",
             author = "LegalTech News",
@@ -206,7 +206,7 @@ object NewsMockData {
             comments = listOf("法务初审效率会提升。", "最终仍需专业复核。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_023",
             title = "AI 训练平台发布低成本微调方案",
             author = "ModelOps 周报",
@@ -215,7 +215,7 @@ object NewsMockData {
             comments = listOf("中小团队更容易上手。", "工具链成熟度很重要。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_024",
             title = "AI 音频降噪技术应用到远程会议",
             author = "AudioLab",
@@ -224,7 +224,7 @@ object NewsMockData {
             comments = listOf("远程办公刚需。", "低功耗实现值得关注。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_025",
             title = "AI 质检机器人升级异常解释能力",
             author = "Factory AI",
@@ -233,7 +233,7 @@ object NewsMockData {
             comments = listOf("解释能力提升体验。", "现场可用性最关键。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_026",
             title = "AI 广告投放平台引入预算守护",
             author = "MarTech Today",
@@ -242,7 +242,7 @@ object NewsMockData {
             comments = listOf("很实用的运营功能。", "需要可自定义阈值。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_027",
             title = "AI 数字人直播支持实时知识问答",
             author = "Digital Human Lab",
@@ -251,7 +251,7 @@ object NewsMockData {
             comments = listOf("互动体验会更好。", "回答准确率要持续监控。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_028",
             title = "大模型评测基准新增稳健性维度",
             author = "Eval Bench",
@@ -260,7 +260,7 @@ object NewsMockData {
             comments = listOf("评测更贴近真实业务。", "希望公开更多样例。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_029",
             title = "AI 供应链预测模型提升补货效率",
             author = "SupplyChain AI",
@@ -269,7 +269,7 @@ object NewsMockData {
             comments = listOf("业务价值非常直接。", "数据质量影响很大。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_030",
             title = "AI 运维助手支持根因定位建议",
             author = "AIOps Weekly",
@@ -278,7 +278,7 @@ object NewsMockData {
             comments = listOf("值班体验会改善。", "需要减少误报率。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_031",
             title = "AI 招聘筛选系统增加公平性校验",
             author = "HRTech Insights",
@@ -287,7 +287,7 @@ object NewsMockData {
             comments = listOf("公平性是核心议题。", "透明机制需要持续完善。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_032",
             title = "AI 视频生成支持镜头脚本控制",
             author = "Creative AI",
@@ -296,7 +296,7 @@ object NewsMockData {
             comments = listOf("创作自由度更高了。", "模板生态会很重要。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_033",
             title = "AI 助手在政务热线场景完成试运行",
             author = "GovTech 观察",
@@ -305,7 +305,7 @@ object NewsMockData {
             comments = listOf("热线效率会提升。", "需保证答复准确与审慎。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_034",
             title = "AI 代码审查工具上线团队规范模式",
             author = "Engineering Pulse",
@@ -314,7 +314,7 @@ object NewsMockData {
             comments = listOf("团队协作会更顺滑。", "规则维护要简单。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_035",
             title = "AI 内容审核模型强化跨语种能力",
             author = "Safety AI",
@@ -323,7 +323,7 @@ object NewsMockData {
             comments = listOf("全球化业务很需要。", "误杀和漏判要平衡。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_036",
             title = "AI 科研助手可自动生成实验记录",
             author = "Research AI Hub",
@@ -332,7 +332,7 @@ object NewsMockData {
             comments = listOf("科研复现会更方便。", "数据版本管理要跟上。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_037",
             title = "AI 电商导购支持意图连续追问",
             author = "Retail AI Daily",
@@ -341,7 +341,7 @@ object NewsMockData {
             comments = listOf("电商客服会很受益。", "对话记忆要稳定。"),
             imageLocalPath = "img1"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_038",
             title = "AI 审计工具新增异常交易聚类",
             author = "AuditTech",
@@ -350,7 +350,7 @@ object NewsMockData {
             comments = listOf("减少人工筛选压力。", "需要结合行业规则。"),
             imageLocalPath = "ic_launcher"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_039",
             title = "AI 训练数据平台上线质量评分",
             author = "DataOps AI",
@@ -359,7 +359,7 @@ object NewsMockData {
             comments = listOf("数据治理越来越重要。", "评分标准建议可配置。"),
             imageLocalPath = "ic_launcher_round"
         ),
-        NewsDetails(
+        NewsDetailsVO(
             id = "news_040",
             title = "AI 工作流编排平台发布企业版",
             author = "Automation AI",
@@ -370,13 +370,13 @@ object NewsMockData {
         )
     )
 
-    fun getNewsDetailsList(): List<NewsDetails> {
+    fun getNewsDetailsList(): List<NewsDetailsVO> {
         return baseNewsList
     }
 
     fun hasMoreNews(page: Int): Boolean = page < TOTAL_NEWS_PAGES
 
-    fun getNewsPage(page: Int, pageSize: Int = 5): List<NewsDetails> {
+    fun getNewsPage(page: Int, pageSize: Int = 5): List<NewsDetailsVO> {
         if (!hasMoreNews(page) || pageSize <= 0) return emptyList()
         return List(pageSize) { index ->
             val seed = baseNewsList[(page * pageSize + index) % baseNewsList.size]

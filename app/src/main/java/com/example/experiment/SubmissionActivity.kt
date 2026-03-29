@@ -9,8 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.experiment.pojo.News
-import com.example.experiment.pojo.NewsDetails
+import com.example.experiment.pojo.VO.NewsProfileVO
+import com.example.experiment.pojo.VO.NewsDetailsVO
 import java.util.UUID
 
 class SubmissionActivity : AppCompatActivity() {
@@ -59,25 +59,25 @@ class SubmissionActivity : AppCompatActivity() {
                 .setMessage(R.string.submission_confirm_message)
                 .setNegativeButton(R.string.submission_confirm_cancel, null)
                 .setPositiveButton(R.string.submission_confirm_submit) { _, _ ->
-                    val previewNews = News(
+                    val previewNewsProfileVO = NewsProfileVO(
                         title = title,
-                        content = content,
+                        profile = content,
                         imageLocalPath = imageLocalPath,
                         imageUrl = imageUrl
                     )
 
-                    val previewNewsDetails = NewsDetails(
+                    val previewNewsDetailsVO = NewsDetailsVO(
                         id = UUID.randomUUID().toString(),
-                        title = previewNews.title,
+                        title = previewNewsProfileVO.title,
                         author = author,
                         publishTime = publishTime,
-                        content = previewNews.content,
+                        content = previewNewsProfileVO.profile,
                         comments = comments,
-                        imageLocalPath = previewNews.imageLocalPath,
-                        imageUrl = previewNews.imageUrl
+                        imageLocalPath = previewNewsProfileVO.imageLocalPath,
+                        imageUrl = previewNewsProfileVO.imageUrl
                     )
 
-                    handleSubmit(previewNews, previewNewsDetails)
+                    handleSubmit(previewNewsProfileVO, previewNewsDetailsVO)
                     clearForm(
                         titleInput,
                         authorInput,
@@ -92,7 +92,7 @@ class SubmissionActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleSubmit(news: News, details: NewsDetails) {
+    private fun handleSubmit(newsProfileVO: NewsProfileVO, details: NewsDetailsVO) {
         // Placeholder for future API integration.
         val message = getString(
             R.string.submission_success,

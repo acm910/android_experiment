@@ -8,11 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.experiment.R
-import com.example.experiment.pojo.NewsDetails
+import com.example.experiment.pojo.VO.NewsDetailsVO
+
+
 
 class NewsAdapter(
-    initialItems: List<NewsDetails>,
-    private val onItemClick: (NewsDetails) -> Unit
+    initialItems: List<NewsDetailsVO>,
+    private val onItemClick: (NewsDetailsVO) -> Unit
 ) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     private val items = initialItems.toMutableList()
@@ -37,20 +39,20 @@ class NewsAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun appendItems(newItems: List<NewsDetails>) {
+    fun appendItems(newItems: List<NewsDetailsVO>) {
         if (newItems.isEmpty()) return
         val start = items.size
         items.addAll(newItems)
         notifyItemRangeInserted(start, newItems.size)
     }
 
-    fun replaceItems(newItems: List<NewsDetails>) {
+    fun replaceItems(newItems: List<NewsDetailsVO>) {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
     }
 
-    private fun resolveImageModel(holder: NewsViewHolder, item: NewsDetails): Any {
+    private fun resolveImageModel(holder: NewsViewHolder, item: NewsDetailsVO): Any {
         val localPath = item.imageLocalPath
         if (!localPath.isNullOrBlank()) {
             if (localPath.startsWith("http://") || localPath.startsWith("https://")) {
