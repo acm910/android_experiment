@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -11,36 +12,54 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.experiment.adapter.NewsAdapter
+import com.example.experiment.data.NewsDbHelper
 import com.example.experiment.data.NewsMockData
 
 class MainActivity : ComponentActivity() {
+    private lateinit var dbHelper: NewsDbHelper
+    private lateinit var adapter: NewsAdapter
+
+    private val submissionLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            // 投稿成功后立即回到数据库重新拉取，保证首页和详情一致。
+            if (result.resultCode == RESULT_OK) {
+                loadNewsFromDb()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.mainactivity)
+
+        dbHelper = NewsDbHelper(this)
+        // 首次启动把 Mock 数据落库，之后统一从数据库读取。
+        dbHelper.seedFromMockIfEmpty(NewsMockData.getNewsDetailsList())
 
         val rootView = findViewById<android.view.View>(R.id.mainRoot)
         val submitButton = findViewById<TextView>(R.id.btnSubmit)
         val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         val layoutManager = LinearLayoutManager(this)
-        val adapter = NewsAdapter(NewsMockData.getNewsDetailsList()) { details ->
+        adapter = NewsAdapter(emptyList()) { details ->
             val intent = Intent(this, NewsActivity::class.java).apply {
-                putExtra(NewsActivity.EXTRA_NEWS_DETAILS, details)
+                putExtra(NewsActivity.EXTRA_NEWS_ID, details.id)
             }
             startActivity(intent)
         }
 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+        loadNewsFromDb()
 
         submitButton.setOnClickListener {
-            startActivity(Intent(this, SubmissionActivity::class.java))
+            submissionLauncher.launch(Intent(this, SubmissionActivity::class.java))
         }
 
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.postDelayed({
-                adapter.replaceItems(NewsMockData.getNewsDetailsList())
+                // 下拉刷新时从数据库重查新闻，而不是直接读取内存 Mock。
+                loadNewsFromDb()
                 swipeRefresh.isRefreshing = false
             }, 500L)
         }
@@ -50,6 +69,10 @@ class MainActivity : ComponentActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
+    }
+
+    private fun loadNewsFromDb() {
+        adapter.replaceItems(dbHelper.queryNewsDetailsList())
     }
 }
 

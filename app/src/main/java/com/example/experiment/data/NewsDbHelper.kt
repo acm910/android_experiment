@@ -36,6 +36,78 @@ class NewsDbHelper(context: Context) :
         }
     }
 
+    // 仅在数据库为空时灌入 Mock 数据，避免每次启动重复写入。
+    fun seedFromMockIfEmpty(items: List<NewsDetailsVO>) {
+        if (items.isEmpty() || queryNewsCount() > 0) return
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            items.forEach { item ->
+                val entity = item.toEntity()
+                db.insertWithOnConflict(
+                    TABLE_NEWS,
+                    null,
+                    entity.toContentValues(),
+                    SQLiteDatabase.CONFLICT_REPLACE
+                )
+                replaceComments(db, entity.id, entity.comments)
+                pruneCommentsOverLimit(db, entity.id)
+            }
+            pruneNewsOverLimit(db)
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    fun queryNewsCount(): Int {
+        val sql = "SELECT COUNT(1) FROM $TABLE_NEWS"
+        readableDatabase.rawQuery(sql, null).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0)
+            }
+        }
+        return 0
+    }
+
+    // 列表页面使用该方法统一从数据库读取，确保刷新后数据一致。
+    fun queryNewsDetailsList(): List<NewsDetailsVO> {
+        val result = mutableListOf<NewsDetailsVO>()
+        val sql = """
+            SELECT $COL_ID, $COL_TITLE, $COL_AUTHOR, $COL_PUBLISH_TIME, $COL_CONTENT,
+                   $COL_IMAGE_LOCAL_PATH, $COL_IMAGE_URL
+            FROM $TABLE_NEWS
+            ORDER BY $COL_PUBLISH_TIME DESC, $COL_ID DESC
+        """.trimIndent()
+
+        readableDatabase.rawQuery(sql, null).use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(COL_ID)
+            val titleIndex = cursor.getColumnIndexOrThrow(COL_TITLE)
+            val authorIndex = cursor.getColumnIndexOrThrow(COL_AUTHOR)
+            val publishTimeIndex = cursor.getColumnIndexOrThrow(COL_PUBLISH_TIME)
+            val contentIndex = cursor.getColumnIndexOrThrow(COL_CONTENT)
+            val localPathIndex = cursor.getColumnIndexOrThrow(COL_IMAGE_LOCAL_PATH)
+            val imageUrlIndex = cursor.getColumnIndexOrThrow(COL_IMAGE_URL)
+
+            while (cursor.moveToNext()) {
+                val newsId = cursor.getString(idIndex)
+                result.add(
+                    NewsDetailsVO(
+                        id = newsId,
+                        title = cursor.getString(titleIndex),
+                        author = cursor.getString(authorIndex),
+                        publishTime = cursor.getString(publishTimeIndex),
+                        content = cursor.getString(contentIndex),
+                        comments = queryCommentsByNewsId(newsId),
+                        imageLocalPath = cursor.getStringOrNull(localPathIndex),
+                        imageUrl = cursor.getStringOrNull(imageUrlIndex)
+                    )
+                )
+            }
+        }
+        return result
+    }
+
     fun insertOrReplace(news: News): Long {
         val db = writableDatabase
         var result = -1L
@@ -141,6 +213,20 @@ class NewsDbHelper(context: Context) :
             put(COL_IMAGE_LOCAL_PATH, imageLocalPath)
             put(COL_IMAGE_URL, imageUrl)
         }
+    }
+
+    private fun NewsDetailsVO.toEntity(): News {
+        return News(
+            id = id,
+            title = title,
+            author = author,
+            publishTime = publishTime,
+            profile = content.take(80),
+            content = content,
+            comments = comments,
+            imageLocalPath = imageLocalPath,
+            imageUrl = imageUrl
+        )
     }
 
     private fun replaceComments(db: SQLiteDatabase, newsId: String, comments: List<String>) {

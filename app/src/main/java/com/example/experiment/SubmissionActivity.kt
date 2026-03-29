@@ -9,15 +9,19 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.experiment.pojo.VO.NewsProfileVO
+import com.example.experiment.data.NewsDbHelper
 import com.example.experiment.pojo.VO.NewsDetailsVO
+import com.example.experiment.pojo.entity.News
 import java.util.UUID
 
 class SubmissionActivity : AppCompatActivity() {
+    private lateinit var dbHelper: NewsDbHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_submission)
+        dbHelper = NewsDbHelper(this)
 
         val rootView = findViewById<android.view.View>(R.id.submissionRoot)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
@@ -59,25 +63,18 @@ class SubmissionActivity : AppCompatActivity() {
                 .setMessage(R.string.submission_confirm_message)
                 .setNegativeButton(R.string.submission_confirm_cancel, null)
                 .setPositiveButton(R.string.submission_confirm_submit) { _, _ ->
-                    val previewNewsProfileVO = NewsProfileVO(
+                    val previewNewsDetailsVO = NewsDetailsVO(
+                        id = UUID.randomUUID().toString(),
                         title = title,
-                        profile = content,
+                        author = author,
+                        publishTime = publishTime,
+                        content = content,
+                        comments = comments,
                         imageLocalPath = imageLocalPath,
                         imageUrl = imageUrl
                     )
 
-                    val previewNewsDetailsVO = NewsDetailsVO(
-                        id = UUID.randomUUID().toString(),
-                        title = previewNewsProfileVO.title,
-                        author = author,
-                        publishTime = publishTime,
-                        content = previewNewsProfileVO.profile,
-                        comments = comments,
-                        imageLocalPath = previewNewsProfileVO.imageLocalPath,
-                        imageUrl = previewNewsProfileVO.imageUrl
-                    )
-
-                    handleSubmit(previewNewsProfileVO, previewNewsDetailsVO)
+                    handleSubmit(previewNewsDetailsVO)
                     clearForm(
                         titleInput,
                         authorInput,
@@ -92,14 +89,35 @@ class SubmissionActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleSubmit(newsProfileVO: NewsProfileVO, details: NewsDetailsVO) {
-        // Placeholder for future API integration.
+    private fun handleSubmit(details: NewsDetailsVO) {
+        // 投稿先本地入库，主页收到 RESULT_OK 后会按数据库重新拉取。
+        val inserted = dbHelper.insertOrReplace(
+            News(
+                id = details.id,
+                title = details.title,
+                author = details.author,
+                publishTime = details.publishTime,
+                profile = details.content.take(80),
+                content = details.content,
+                comments = details.comments,
+                imageLocalPath = details.imageLocalPath,
+                imageUrl = details.imageUrl
+            )
+        )
+
+        if (inserted == -1L) {
+            Toast.makeText(this, "投稿失败，请稍后重试", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val message = getString(
             R.string.submission_success,
             details.title,
             details.comments.size
         )
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        setResult(RESULT_OK)
+        finish()
     }
 
     private fun clearForm(vararg fields: EditText) {
