@@ -2,6 +2,9 @@ package com.example.experiment.pojo.entity
 
 import java.io.Serializable
 
+/**
+ * 新闻持久化实体：对应本地 SQLite 中的新闻记录。
+ */
 data class News(
     val id: String,
     val title: String,

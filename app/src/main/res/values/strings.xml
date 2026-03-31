@@ -9,7 +9,6 @@
     <string name="submission_hint_author">作者（必填）</string>
     <string name="submission_hint_publish_time">发布时间（必填，例如 2026-03-29 18:30）</string>
     <string name="submission_hint_content">正文内容（必填）</string>
-    <string name="submission_hint_comments">评论（可选，一行一条）</string>
     <string name="submission_hint_local_path">图片本地路径（可选）</string>
     <string name="submission_hint_image_url">图片 URL（可选）</string>
     <string name="submission_action_submit_review">提交审核</string>
@@ -18,5 +17,13 @@
     <string name="submission_confirm_message">确定要提交这篇文章进行审核吗？</string>
     <string name="submission_confirm_cancel">取消</string>
     <string name="submission_confirm_submit">确认提交</string>
-    <string name="submission_success">提交成功：%1$s（评论 %2$d 条）</string>
+    <string name="submission_success">提交成功：%1$s</string>
+    <string name="comments_title">评价</string>
+    <string name="comment_input_hint">写下你的评价...</string>
+    <string name="comment_publish">发布评价</string>
+    <string name="comments_empty">暂无评论，来发表第一条评价吧</string>
+    <string name="comment_publish_empty">请输入评价内容</string>
+    <string name="comment_publish_success">评价发布成功</string>
+    <string name="comment_publish_failed">评价发布失败，请稍后重试</string>
+    <string name="comment_avatar_desc">用户头像</string>
 </resources>

@@ -2,6 +2,9 @@ package com.example.experiment.data
 
 import com.example.experiment.pojo.VO.NewsDetailsVO
 
+/**
+ * 新闻模拟数据源：用于首启灌库和本地调试。
+ */
 object NewsMockData {
 
     private const val TOTAL_NEWS_PAGES = 4
@@ -371,12 +374,14 @@ object NewsMockData {
     )
 
     fun getNewsDetailsList(): List<NewsDetailsVO> {
+        // 返回固定基线数据，保证首启可见内容稳定。
         return baseNewsList
     }
 
     fun hasMoreNews(page: Int): Boolean = page < TOTAL_NEWS_PAGES
 
     fun getNewsPage(page: Int, pageSize: Int = 5): List<NewsDetailsVO> {
+        // 通过复制基础数据构造分页效果，便于验证上拉加载流程。
         if (!hasMoreNews(page) || pageSize <= 0) return emptyList()
         return List(pageSize) { index ->
             val seed = baseNewsList[(page * pageSize + index) % baseNewsList.size]
@@ -390,6 +395,7 @@ object NewsMockData {
     fun hasMoreComments(page: Int): Boolean = page < TOTAL_COMMENT_PAGES
 
     fun getMoreComments(newsId: String, page: Int, pageSize: Int = 3): List<String> {
+        // 生成可定位来源的评论文本，方便调试评论分页展示。
         if (!hasMoreComments(page) || pageSize <= 0) return emptyList()
         return List(pageSize) { index ->
             val commentIndex = page * pageSize + index + 1

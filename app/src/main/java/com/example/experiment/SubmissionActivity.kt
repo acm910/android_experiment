@@ -14,10 +14,14 @@ import com.example.experiment.pojo.VO.NewsDetailsVO
 import com.example.experiment.pojo.entity.News
 import java.util.UUID
 
+/**
+ * 投稿页面：收集表单内容，确认后写入本地新闻库。
+ */
 class SubmissionActivity : AppCompatActivity() {
     private lateinit var dbHelper: NewsDbHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 初始化表单与提交交互。
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_submission)
@@ -34,7 +38,6 @@ class SubmissionActivity : AppCompatActivity() {
         val authorInput = findViewById<EditText>(R.id.etAuthor)
         val publishTimeInput = findViewById<EditText>(R.id.etPublishTime)
         val contentInput = findViewById<EditText>(R.id.etContent)
-        val commentsInput = findViewById<EditText>(R.id.etComments)
         val imageLocalPathInput = findViewById<EditText>(R.id.etImageLocalPath)
         val imageUrlInput = findViewById<EditText>(R.id.etImageUrl)
         val submitButton = findViewById<Button>(R.id.btnSubmitReview)
@@ -44,7 +47,6 @@ class SubmissionActivity : AppCompatActivity() {
             val author = authorInput.text.toString().trim()
             val publishTime = publishTimeInput.text.toString().trim()
             val content = contentInput.text.toString().trim()
-            val commentsText = commentsInput.text.toString().trim()
             val imageLocalPath = imageLocalPathInput.text.toString().trim().ifBlank { null }
             val imageUrl = imageUrlInput.text.toString().trim().ifBlank { null }
 
@@ -52,11 +54,6 @@ class SubmissionActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.submission_validation_required, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            val comments = commentsText
-                .lines()
-                .map { line -> line.trim() }
-                .filter { line -> line.isNotEmpty() }
 
             AlertDialog.Builder(this)
                 .setTitle(R.string.submission_confirm_title)
@@ -69,7 +66,7 @@ class SubmissionActivity : AppCompatActivity() {
                         author = author,
                         publishTime = publishTime,
                         content = content,
-                        comments = comments,
+                        comments = emptyList(),
                         imageLocalPath = imageLocalPath,
                         imageUrl = imageUrl
                     )
@@ -80,7 +77,6 @@ class SubmissionActivity : AppCompatActivity() {
                         authorInput,
                         publishTimeInput,
                         contentInput,
-                        commentsInput,
                         imageLocalPathInput,
                         imageUrlInput
                     )
@@ -112,8 +108,7 @@ class SubmissionActivity : AppCompatActivity() {
 
         val message = getString(
             R.string.submission_success,
-            details.title,
-            details.comments.size
+            details.title
         )
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         setResult(RESULT_OK)
@@ -121,7 +116,7 @@ class SubmissionActivity : AppCompatActivity() {
     }
 
     private fun clearForm(vararg fields: EditText) {
+        // 提交成功后清空输入框，便于继续录入。
         fields.forEach { field -> field.text?.clear() }
     }
 }
-

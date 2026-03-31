@@ -15,6 +15,9 @@ import com.example.experiment.adapter.NewsAdapter
 import com.example.experiment.data.NewsDbHelper
 import com.example.experiment.data.NewsMockData
 
+/**
+ * 新闻首页：负责列表展示、下拉刷新和投稿入口。
+ */
 class MainActivity : ComponentActivity() {
     private lateinit var dbHelper: NewsDbHelper
     private lateinit var adapter: NewsAdapter
@@ -28,6 +31,7 @@ class MainActivity : ComponentActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 页面初始化：先准备数据库，再绑定列表与交互事件。
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.mainactivity)
@@ -72,7 +76,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun loadNewsFromDb() {
+        // 每次刷新都走数据库，保证显示的是当前持久化数据。
         adapter.replaceItems(dbHelper.queryNewsDetailsList())
     }
 }
-

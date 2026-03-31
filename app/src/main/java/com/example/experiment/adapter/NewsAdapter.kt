@@ -10,8 +10,9 @@ import coil.load
 import com.example.experiment.R
 import com.example.experiment.pojo.VO.NewsDetailsVO
 
-
-
+/**
+ * 新闻列表适配器：负责条目绑定、图片加载和点击回调。
+ */
 class NewsAdapter(
     initialItems: List<NewsDetailsVO>,
     private val onItemClick: (NewsDetailsVO) -> Unit
@@ -53,6 +54,7 @@ class NewsAdapter(
     }
 
     private fun resolveImageModel(holder: NewsViewHolder, item: NewsDetailsVO): Any {
+        // 优先使用本地路径；本地路径无法解析时回退到 URL 或默认图。
         val localPath = item.imageLocalPath
         if (!localPath.isNullOrBlank()) {
             if (localPath.startsWith("http://") || localPath.startsWith("https://")) {
@@ -96,6 +98,9 @@ class NewsAdapter(
         }
     }
 
+    /**
+     * 条目视图缓存，减少滚动时的重复查找。
+     */
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.tvTitle)
         val contentTextView: TextView = itemView.findViewById(R.id.tvContent)
@@ -103,4 +108,3 @@ class NewsAdapter(
         val dividerView: View = itemView.findViewById(R.id.itemDivider)
     }
 }
-
