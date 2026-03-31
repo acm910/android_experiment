@@ -2,4 +2,16 @@
 <resources>
 
     <style name="Theme.Experiment" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="TextAppearance.Experiment.BottomNav.Active" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.Experiment.BottomNav.Inactive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
 </resources>
