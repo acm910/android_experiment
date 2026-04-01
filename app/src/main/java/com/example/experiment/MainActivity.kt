@@ -1,6 +1,7 @@
 package com.example.experiment
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.mainactivity)
 
-        val rootView = findViewById<android.view.View>(R.id.mainShellRoot)
+        val rootView = findViewById<View>(R.id.mainShellRoot)
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->

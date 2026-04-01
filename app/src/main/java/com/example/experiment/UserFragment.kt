@@ -1,16 +1,129 @@
 package com.example.experiment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import coil.load
+import com.example.experiment.data.session.SessionManager
 
+
+//todo 登录功能用一下Sharedpreferences 简单实现，后续可以改成 Room 或者其他更合适的方案。登录状态和用户信息（如用户名和头像路径）保存在 SessionManager 中，提供统一的接口供各页面查询和更新。
 /**
- * 用户页 Fragment：当前仅提供展示结构，后续再接入用户相关功能。
+ * 用户页 Fragment：提供登录入口，并根据登录态展示用户名称和头像。
  */
 class UserFragment : Fragment(R.layout.fragment_user) {
+    private lateinit var sessionManager: SessionManager
+    private lateinit var avatarView: ImageView
+    private lateinit var userNameView: TextView
+    private lateinit var userSubtitleView: TextView
+
+    private val loginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                renderLoginState()
+            }
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 预留：后续绑定信息修改、退出登录等点击事件。
+        sessionManager = SessionManager(requireContext())
+        avatarView = view.findViewById(R.id.ivUserAvatar)
+        userNameView = view.findViewById(R.id.tvUserName)
+        userSubtitleView = view.findViewById(R.id.tvUserSubtitle)
+
+        val headerBlock = view.findViewById<View>(R.id.userHeaderBlock)
+        val logoutBtn = view.findViewById<View>(R.id.btnLogout)
+
+        headerBlock.setOnClickListener {
+            loginLauncher.launch(Intent(requireContext(), LoginActivity::class.java))
+        }
+
+        logoutBtn.setOnClickListener {
+            if (!sessionManager.isLoggedIn()) {
+                Toast.makeText(requireContext(), R.string.user_not_logged_in, Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+            sessionManager.clearLogin()
+            renderLoginState()
+            Toast.makeText(requireContext(), R.string.user_logout_success, Toast.LENGTH_SHORT).show()
+        }
+
+        renderLoginState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        renderLoginState()
+    }
+
+    private fun renderLoginState() {
+        if (!sessionManager.isLoggedIn()) {
+            userNameView.text = getString(R.string.user_name_login_hint)
+            userSubtitleView.text = getString(R.string.user_subtitle_login_hint)
+            avatarView.setImageDrawable(null)
+            avatarView.setBackgroundResource(R.drawable.bg_avatar_empty)
+            return
+        }
+
+        val username = sessionManager.getUserName().orEmpty()
+        val avatarPath = sessionManager.getAvatarPath()
+
+        userNameView.text = username.ifBlank { getString(R.string.user_name_login_hint) }
+        userSubtitleView.text = getString(R.string.user_subtitle_logged_in)
+        avatarView.setBackgroundResource(0)
+        bindAvatar(avatarPath)
+    }
+
+    private fun bindAvatar(avatarPath: String?) {
+        val source = avatarPath?.trim()
+        if (source.isNullOrBlank()) {
+            avatarView.setImageResource(R.mipmap.ic_launcher_round)
+            return
+        }
+
+        if (source.startsWith("http://") ||
+            source.startsWith("https://") ||
+            source.startsWith("file://") ||
+            source.startsWith("content://") ||
+            source.startsWith("/") ||
+            source.startsWith("android.resource://")
+        ) {
+            avatarView.load(source) {
+                crossfade(true)
+                placeholder(R.mipmap.ic_launcher_round)
+                error(R.mipmap.ic_launcher_round)
+            }
+            return
+        }
+
+        val resourceName = source
+            .substringAfterLast('/')
+            .substringAfterLast('\\')
+            .substringBeforeLast('.')
+
+        val drawableId = requireContext().resources.getIdentifier(
+            resourceName,
+            "drawable",
+            requireContext().packageName
+        )
+        val mipmapId = requireContext().resources.getIdentifier(
+            resourceName,
+            "mipmap",
+            requireContext().packageName
+        )
+
+        when {
+            drawableId != 0 -> avatarView.setImageResource(drawableId)
+            mipmapId != 0 -> avatarView.setImageResource(mipmapId)
+            else -> avatarView.setImageResource(R.mipmap.ic_launcher_round)
+        }
     }
 }
 

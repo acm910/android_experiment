@@ -30,16 +30,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
+                android:id="@+id/userHeaderBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#FFFFFF"
+                android:clickable="true"
+                android:focusable="true"
                 android:orientation="horizontal"
                 android:padding="16dp">
                 <ImageView
+                    android:id="@+id/ivUserAvatar"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:contentDescription="@string/user_avatar_desc"
-                    android:src="@mipmap/ic_launcher_round" />
+                    android:background="@drawable/bg_avatar_empty" />
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -47,17 +51,19 @@
                     android:gravity="center_vertical"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/tvUserName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/user_name_demo"
+                        android:text="@string/user_name_login_hint"
                         android:textColor="#223046"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                     <TextView
+                        android:id="@+id/tvUserSubtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="@string/user_subtitle_demo"
+                        android:text="@string/user_subtitle_login_hint"
                         android:textColor="#7B8AA0"
                         android:textSize="13sp" />
                 </LinearLayout>

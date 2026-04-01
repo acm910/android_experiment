@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">experiment</string>
-    <string name="main_bar_title">test</string>
-    <string name="news_bar_title">testnews</string>
+    <string name="main_bar_title">主页</string>
+    <string name="news_bar_title">新闻</string>
     <string name="action_submit">投稿</string>
     <string name="submission_title">投稿</string>
     <string name="submission_section_desc">请填写新闻稿件信息，提交后进入审核流程</string>
@@ -37,4 +37,21 @@
     <string name="user_action_account">账号与安全</string>
     <string name="user_action_submission">我的投稿</string>
     <string name="user_action_logout">退出登录</string>
+
+    <string name="login_title">登录</string>
+    <string name="login_desc">请输入账号信息完成登录</string>
+    <string name="login_hint_username">用户名</string>
+    <string name="login_hint_password">密码</string>
+    <string name="login_remember_username">记住用户名</string>
+    <string name="login_remember_password">记住密码</string>
+    <string name="login_action">登录</string>
+    <string name="login_cancel">暂不登录</string>
+    <string name="login_input_required">请输入用户名和密码</string>
+    <string name="login_success">登录成功</string>
+    <string name="toast_login_first">请先登录</string>
+    <string name="user_name_login_hint">请登录</string>
+    <string name="user_subtitle_login_hint">点击头像区域进入登录页面</string>
+    <string name="user_subtitle_logged_in">欢迎回来，祝你今天也有好心情</string>
+    <string name="user_not_logged_in">当前未登录</string>
+    <string name="user_logout_success">已退出登录</string>
 </resources>

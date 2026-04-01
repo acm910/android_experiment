@@ -1,6 +1,7 @@
 package com.example.experiment
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -27,7 +28,7 @@ class SubmissionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_submission)
         dbHelper = NewsDbHelper(this)
 
-        val rootView = findViewById<android.view.View>(R.id.submissionRoot)
+        val rootView = findViewById<View>(R.id.submissionRoot)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
