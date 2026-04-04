@@ -13,6 +13,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.experiment.data.NewsDbHelper
 import com.example.experiment.pojo.VO.NewsDetailsVO
 import com.example.experiment.pojo.entity.News
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 /**
@@ -37,7 +39,6 @@ class SubmissionActivity : AppCompatActivity() {
 
         val titleInput = findViewById<EditText>(R.id.etTitle)
         val authorInput = findViewById<EditText>(R.id.etAuthor)
-        val publishTimeInput = findViewById<EditText>(R.id.etPublishTime)
         val contentInput = findViewById<EditText>(R.id.etContent)
         val imageLocalPathInput = findViewById<EditText>(R.id.etImageLocalPath)
         val imageUrlInput = findViewById<EditText>(R.id.etImageUrl)
@@ -46,12 +47,12 @@ class SubmissionActivity : AppCompatActivity() {
         submitButton.setOnClickListener {
             val title = titleInput.text.toString().trim()
             val author = authorInput.text.toString().trim()
-            val publishTime = publishTimeInput.text.toString().trim()
+            val publishTime = currentPublishTime()
             val content = contentInput.text.toString().trim()
             val imageLocalPath = imageLocalPathInput.text.toString().trim().ifBlank { null }
             val imageUrl = imageUrlInput.text.toString().trim().ifBlank { null }
 
-            if (title.isBlank() || author.isBlank() || publishTime.isBlank() || content.isBlank()) {
+            if (title.isBlank() || author.isBlank() || content.isBlank()) {
                 Toast.makeText(this, R.string.submission_validation_required, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -76,7 +77,6 @@ class SubmissionActivity : AppCompatActivity() {
                     clearForm(
                         titleInput,
                         authorInput,
-                        publishTimeInput,
                         contentInput,
                         imageLocalPathInput,
                         imageUrlInput
@@ -119,5 +119,9 @@ class SubmissionActivity : AppCompatActivity() {
     private fun clearForm(vararg fields: EditText) {
         // 提交成功后清空输入框，便于继续录入。
         fields.forEach { field -> field.text?.clear() }
+    }
+
+    private fun currentPublishTime(): String {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
     }
 }

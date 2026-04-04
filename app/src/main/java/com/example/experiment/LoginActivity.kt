@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            sessionManager.saveLogin(username, "ic_launcher_round")
+            sessionManager.saveLogin(username)
 
             sessionManager.setRememberUsernameEnabled(rememberUsername)
             if (rememberUsername) {

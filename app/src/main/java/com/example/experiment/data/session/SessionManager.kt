@@ -21,14 +21,44 @@ class SessionManager(context: Context) {
     }
 
     fun getAvatarPath(): String? {
-        return prefs.getString(KEY_AVATAR_PATH, null)
+        val userKey = prefs.getString(KEY_USER_UNIQUE_KEY, null)
+        if (userKey.isNullOrBlank()) {
+            return prefs.getString(KEY_AVATAR_PATH, null)
+        }
+        return prefs.getString(makeAvatarKey(userKey), prefs.getString(KEY_AVATAR_PATH, null))
     }
 
-    fun saveLogin(username: String, avatarPath: String?) {
+    /**
+     * 仅更新头像路径，不改动登录态和用户名。
+     */
+    fun updateAvatarPath(avatarPath: String?) {
+        val editor = prefs.edit().putString(KEY_AVATAR_PATH, avatarPath)
+        val userKey = prefs.getString(KEY_USER_UNIQUE_KEY, null)
+        if (!userKey.isNullOrBlank()) {
+            editor.putString(makeAvatarKey(userKey), avatarPath)
+        }
+        editor.apply()
+    }
+
+    /**
+     * 登录并切换到指定账号：同一账号会复用历史头像，保证头像持久化。
+     */
+    fun saveLogin(username: String, defaultAvatarPath: String? = "ic_launcher_round") {
+        val displayName = username.trim()
+        val userKey = normalizeUsername(displayName)
+        if (userKey.isBlank()) return
+
+        val userAvatarKey = makeAvatarKey(userKey)
+        val legacyAvatar = prefs.getString(KEY_AVATAR_PATH, null)
+        val storedAvatar = prefs.getString(userAvatarKey, null)
+        val finalAvatar = storedAvatar ?: legacyAvatar ?: defaultAvatarPath
+
         prefs.edit()
             .putBoolean(KEY_LOGGED_IN, true)
-            .putString(KEY_USERNAME, username)
-            .putString(KEY_AVATAR_PATH, avatarPath)
+            .putString(KEY_USER_UNIQUE_KEY, userKey)
+            .putString(KEY_USERNAME, displayName)
+            .putString(KEY_AVATAR_PATH, finalAvatar)
+            .putString(userAvatarKey, finalAvatar)
             .apply()
     }
 
@@ -37,7 +67,16 @@ class SessionManager(context: Context) {
             .putBoolean(KEY_LOGGED_IN, false)
             .remove(KEY_USERNAME)
             .remove(KEY_AVATAR_PATH)
+            .remove(KEY_USER_UNIQUE_KEY)
             .apply()
+    }
+
+    private fun normalizeUsername(username: String): String {
+        return username.trim().lowercase()
+    }
+
+    private fun makeAvatarKey(userKey: String): String {
+        return "${KEY_USER_AVATAR_PREFIX}$userKey"
     }
 
     /**
@@ -103,6 +142,8 @@ class SessionManager(context: Context) {
         private const val KEY_LOGGED_IN = "key_logged_in"
         private const val KEY_USERNAME = "key_username"
         private const val KEY_AVATAR_PATH = "key_avatar_path"
+        private const val KEY_USER_UNIQUE_KEY = "key_user_unique_key"
+        private const val KEY_USER_AVATAR_PREFIX = "key_user_avatar_"
         private const val KEY_LAST_USERNAME = "key_last_username"
         private const val KEY_REMEMBER_USERNAME = "key_remember_username"
         private const val KEY_REMEMBER_PASSWORD = "key_remember_password"

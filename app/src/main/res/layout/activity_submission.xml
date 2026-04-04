@@ -67,16 +67,6 @@
                 android:padding="12dp" />
 
             <EditText
-                android:id="@+id/etPublishTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:drawable/edit_text"
-                android:hint="@string/submission_hint_publish_time"
-                android:inputType="text"
-                android:padding="12dp" />
-
-            <EditText
                 android:id="@+id/etContent"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"

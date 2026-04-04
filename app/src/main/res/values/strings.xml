@@ -7,12 +7,11 @@
     <string name="submission_section_desc">请填写新闻稿件信息，提交后进入审核流程</string>
     <string name="submission_hint_title">新闻标题（必填）</string>
     <string name="submission_hint_author">作者（必填）</string>
-    <string name="submission_hint_publish_time">发布时间（必填，例如 2026-03-29 18:30）</string>
     <string name="submission_hint_content">正文内容（必填）</string>
     <string name="submission_hint_local_path">图片本地路径（可选）</string>
     <string name="submission_hint_image_url">图片 URL（可选）</string>
     <string name="submission_action_submit_review">提交审核</string>
-    <string name="submission_validation_required">请先填写标题、作者、发布时间和正文</string>
+    <string name="submission_validation_required">请先填写标题、作者和正文</string>
     <string name="submission_confirm_title">确认提交</string>
     <string name="submission_confirm_message">确定要提交这篇文章进行审核吗？</string>
     <string name="submission_confirm_cancel">取消</string>
@@ -54,4 +53,13 @@
     <string name="user_subtitle_logged_in">欢迎回来，祝你今天也有好心情</string>
     <string name="user_not_logged_in">当前未登录</string>
     <string name="user_logout_success">已退出登录</string>
+
+    <string name="avatar_sheet_title">设置头像</string>
+    <string name="avatar_sheet_pick_gallery">从相册选择</string>
+    <string name="avatar_sheet_take_photo">拍照</string>
+    <string name="avatar_sheet_cancel">取消</string>
+    <string name="user_avatar_updated">头像已更新</string>
+    <string name="user_avatar_update_failed">头像更新失败，请重试</string>
+    <string name="user_camera_permission_denied">未授予相机权限，无法拍照</string>
+
 </resources>
