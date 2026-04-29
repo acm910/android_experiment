@@ -18,7 +18,8 @@ object NewsMockData {
             publishTime = "2026-03-29 09:00",
             content = "多家企业开始将智能体用于工单流转和自动审批，平均处理时长下降约 32%。",
             comments = listOf("企业场景确实更容易看到 ROI。", "期待开源框架对接方案。"),
-            imageLocalPath = "img1"
+            imageLocalPath = "img1",
+            videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
         ),
         NewsDetailsVO(
             id = "news_002",
@@ -126,7 +127,8 @@ object NewsMockData {
             publishTime = "2026-03-28 14:10",
             content = "模型可自动抽取关键片段并生成章节标题，适合培训录屏与课程回看。",
             comments = listOf("效率提升很直观。", "希望支持多语言字幕。"),
-            imageLocalPath = "img1"
+            imageLocalPath = "img1",
+            videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
         ),
         NewsDetailsVO(
             id = "news_014",
@@ -297,7 +299,8 @@ object NewsMockData {
             publishTime = "2026-03-27 09:35",
             content = "用户可通过镜头语言模板控制构图和运镜，提升短视频生成可控性。",
             comments = listOf("创作自由度更高了。", "模板生态会很重要。"),
-            imageLocalPath = "ic_launcher"
+            imageLocalPath = "ic_launcher",
+            videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
         ),
         NewsDetailsVO(
             id = "news_033",

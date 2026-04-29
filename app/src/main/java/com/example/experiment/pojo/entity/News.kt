@@ -14,5 +14,6 @@ data class News(
     val content: String,
     val comments: List<String> = emptyList(),
     val imageLocalPath: String? = null,
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+    val videoUrl: String? = null
 ) : Serializable

@@ -10,11 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper
 class AppDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, NewsSchema.DATABASE_NAME, null, NewsSchema.DATABASE_VERSION) {
 
-    override fun onConfigure(db: SQLiteDatabase) {
-        super.onConfigure(db)
-        db.setForeignKeyConstraintsEnabled(true)
-    }
-
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(NewsSchema.SQL_CREATE_NEWS_TABLE)
         db.execSQL(NewsSchema.SQL_CREATE_NEWS_PUBLISH_TIME_INDEX)
@@ -36,9 +31,19 @@ class AppDatabaseHelper(context: Context) :
         onCreate(db)
     }
 
+    override fun onConfigure(db: SQLiteDatabase) {
+        super.onConfigure(db)
+        db.setForeignKeyConstraintsEnabled(true)
+    }
+
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // 允许开发阶段回退版本号，降级时也直接重建。
         onUpgrade(db, newVersion, oldVersion)
+    }
+
+    override fun onOpen(db: SQLiteDatabase) {
+        super.onOpen(db)
+        ensureNewsColumns(db)
     }
 
     private fun ensureDefaultUser(db: SQLiteDatabase) {
@@ -65,6 +70,24 @@ class AppDatabaseHelper(context: Context) :
             )
             """.trimIndent()
         )
+    }
+
+    private fun ensureNewsColumns(db: SQLiteDatabase) {
+        val existingColumns = mutableSetOf<String>()
+        db.rawQuery("PRAGMA table_info(${NewsSchema.TABLE_NEWS})", null).use { cursor ->
+            val nameIndex = cursor.getColumnIndex("name")
+            while (cursor.moveToNext()) {
+                if (nameIndex >= 0) {
+                    existingColumns.add(cursor.getString(nameIndex))
+                }
+            }
+        }
+
+        if (!existingColumns.contains(NewsSchema.COL_VIDEO_URL)) {
+            db.execSQL(
+                "ALTER TABLE ${NewsSchema.TABLE_NEWS} ADD COLUMN ${NewsSchema.COL_VIDEO_URL} TEXT"
+            )
+        }
     }
 }
 

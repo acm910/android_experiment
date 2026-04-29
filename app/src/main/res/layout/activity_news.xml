@@ -70,6 +70,21 @@
                     android:textSize="13sp"
                     tools:text="时间: 2026-03-29 09:30" />
 
+                <FrameLayout
+                    android:id="@+id/newsVideoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_marginTop="14dp"
+                    android:background="#EDEFF4"
+                    android:visibility="gone">
+
+                    <VideoView
+                        android:id="@+id/vvNewsVideo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/news_video_desc" />
+                </FrameLayout>
+
                 <TextView
                     android:id="@+id/tvNewsBody"
                     android:layout_width="match_parent"

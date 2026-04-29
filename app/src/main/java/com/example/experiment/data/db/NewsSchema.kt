@@ -26,6 +26,7 @@ object NewsSchema {
     const val COL_CONTENT = "content"
     const val COL_IMAGE_LOCAL_PATH = "image_local_path"
     const val COL_IMAGE_URL = "image_url"
+    const val COL_VIDEO_URL = "video_url"
 
     const val COL_NEWS_CONTENT_NEWS_ID = "news_id"
     const val COL_CONTENT_TEXT = "content_text"
@@ -59,7 +60,8 @@ object NewsSchema {
             $COL_PROFILE TEXT NOT NULL DEFAULT '',
             $COL_CONTENT TEXT NOT NULL DEFAULT '',
             $COL_IMAGE_LOCAL_PATH TEXT,
-            $COL_IMAGE_URL TEXT
+            $COL_IMAGE_URL TEXT,
+            $COL_VIDEO_URL TEXT
         )
     """.trimIndent()
 

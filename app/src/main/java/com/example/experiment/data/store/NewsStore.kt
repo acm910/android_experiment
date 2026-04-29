@@ -19,7 +19,56 @@ class NewsStore(
     private val userStore: UserStore,
     private val contentStore: ContentStore
 ) {
+    fun queryNewsCount(): Int {
+        val sql = "SELECT COUNT(1) FROM ${NewsSchema.TABLE_NEWS}"
+        dbHelper.readableDatabase.rawQuery(sql, null).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0)
+            }
+        }
+        return 0
+    }
 
+    fun queryNewsDetailsList(): List<NewsDetailsVO> {
+        val result = mutableListOf<NewsDetailsVO>()
+        val sql = """
+            SELECT n.${NewsSchema.COL_ID}, n.${NewsSchema.COL_TITLE}, n.${NewsSchema.COL_AUTHOR}, n.${NewsSchema.COL_PUBLISH_TIME},
+                   COALESCE(c.${NewsSchema.COL_CONTENT_TEXT}, n.${NewsSchema.COL_CONTENT}) AS detail_content,
+                   n.${NewsSchema.COL_IMAGE_LOCAL_PATH}, n.${NewsSchema.COL_IMAGE_URL}, n.${NewsSchema.COL_VIDEO_URL}
+            FROM ${NewsSchema.TABLE_NEWS} n
+            LEFT JOIN ${NewsSchema.TABLE_NEWS_CONTENT} c ON n.${NewsSchema.COL_ID} = c.${NewsSchema.COL_NEWS_CONTENT_NEWS_ID}
+            ORDER BY n.${NewsSchema.COL_PUBLISH_TIME} DESC, n.${NewsSchema.COL_ID} DESC
+        """.trimIndent()
+
+        dbHelper.readableDatabase.rawQuery(sql, null).use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_ID)
+            val titleIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_TITLE)
+            val authorIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_AUTHOR)
+            val publishTimeIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_PUBLISH_TIME)
+            val contentIndex = cursor.getColumnIndexOrThrow("detail_content")
+            val localPathIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_LOCAL_PATH)
+            val imageUrlIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_URL)
+            val videoUrlIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_VIDEO_URL)
+
+            while (cursor.moveToNext()) {
+                val newsId = cursor.getString(idIndex)
+                result.add(
+                    NewsDetailsVO(
+                        id = newsId,
+                        title = cursor.getString(titleIndex),
+                        author = cursor.getString(authorIndex),
+                        publishTime = cursor.getString(publishTimeIndex),
+                        content = cursor.getString(contentIndex),
+                        comments = queryCommentsByNewsId(newsId),
+                        imageLocalPath = cursor.getStringOrNull(localPathIndex),
+                        imageUrl = cursor.getStringOrNull(imageUrlIndex),
+                        videoUrl = cursor.getStringOrNull(videoUrlIndex)
+                    )
+                )
+            }
+        }
+        return result
+    }
     fun seedFromMockIfEmpty(items: List<NewsDetailsVO>) {
         if (items.isEmpty() || queryNewsCount() > 0) return
         val db = dbHelper.writableDatabase
@@ -42,55 +91,6 @@ class NewsStore(
         } finally {
             db.endTransaction()
         }
-    }
-
-    fun queryNewsCount(): Int {
-        val sql = "SELECT COUNT(1) FROM ${NewsSchema.TABLE_NEWS}"
-        dbHelper.readableDatabase.rawQuery(sql, null).use { cursor ->
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(0)
-            }
-        }
-        return 0
-    }
-
-    fun queryNewsDetailsList(): List<NewsDetailsVO> {
-        val result = mutableListOf<NewsDetailsVO>()
-        val sql = """
-            SELECT n.${NewsSchema.COL_ID}, n.${NewsSchema.COL_TITLE}, n.${NewsSchema.COL_AUTHOR}, n.${NewsSchema.COL_PUBLISH_TIME},
-                   COALESCE(c.${NewsSchema.COL_CONTENT_TEXT}, n.${NewsSchema.COL_CONTENT}) AS detail_content,
-                   n.${NewsSchema.COL_IMAGE_LOCAL_PATH}, n.${NewsSchema.COL_IMAGE_URL}
-            FROM ${NewsSchema.TABLE_NEWS} n
-            LEFT JOIN ${NewsSchema.TABLE_NEWS_CONTENT} c ON n.${NewsSchema.COL_ID} = c.${NewsSchema.COL_NEWS_CONTENT_NEWS_ID}
-            ORDER BY n.${NewsSchema.COL_PUBLISH_TIME} DESC, n.${NewsSchema.COL_ID} DESC
-        """.trimIndent()
-
-        dbHelper.readableDatabase.rawQuery(sql, null).use { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_ID)
-            val titleIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_TITLE)
-            val authorIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_AUTHOR)
-            val publishTimeIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_PUBLISH_TIME)
-            val contentIndex = cursor.getColumnIndexOrThrow("detail_content")
-            val localPathIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_LOCAL_PATH)
-            val imageUrlIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_URL)
-
-            while (cursor.moveToNext()) {
-                val newsId = cursor.getString(idIndex)
-                result.add(
-                    NewsDetailsVO(
-                        id = newsId,
-                        title = cursor.getString(titleIndex),
-                        author = cursor.getString(authorIndex),
-                        publishTime = cursor.getString(publishTimeIndex),
-                        content = cursor.getString(contentIndex),
-                        comments = queryCommentsByNewsId(newsId),
-                        imageLocalPath = cursor.getStringOrNull(localPathIndex),
-                        imageUrl = cursor.getStringOrNull(imageUrlIndex)
-                    )
-                )
-            }
-        }
-        return result
     }
 
     fun insertOrReplace(news: News): Long {
@@ -191,7 +191,7 @@ class NewsStore(
     fun queryNewsProfileList(): List<NewsProfileVO> {
         val result = mutableListOf<NewsProfileVO>()
         val sql = """
-            SELECT ${NewsSchema.COL_TITLE}, ${NewsSchema.COL_PROFILE}, ${NewsSchema.COL_IMAGE_LOCAL_PATH}, ${NewsSchema.COL_IMAGE_URL}
+            SELECT ${NewsSchema.COL_TITLE}, ${NewsSchema.COL_PROFILE}, ${NewsSchema.COL_IMAGE_LOCAL_PATH}, ${NewsSchema.COL_IMAGE_URL}, ${NewsSchema.COL_VIDEO_URL}
             FROM ${NewsSchema.TABLE_NEWS}
             ORDER BY ${NewsSchema.COL_PUBLISH_TIME} DESC
         """.trimIndent()
@@ -201,6 +201,7 @@ class NewsStore(
             val profileIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_PROFILE)
             val localPathIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_LOCAL_PATH)
             val imageUrlIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_URL)
+            val videoUrlIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_VIDEO_URL)
 
             while (cursor.moveToNext()) {
                 result.add(
@@ -208,7 +209,8 @@ class NewsStore(
                         title = cursor.getString(titleIndex),
                         profile = cursor.getString(profileIndex),
                         imageLocalPath = cursor.getStringOrNull(localPathIndex),
-                        imageUrl = cursor.getStringOrNull(imageUrlIndex)
+                        imageUrl = cursor.getStringOrNull(imageUrlIndex),
+                        videoUrl = cursor.getStringOrNull(videoUrlIndex)
                     )
                 )
             }
@@ -220,7 +222,7 @@ class NewsStore(
         val sql = """
             SELECT n.${NewsSchema.COL_ID}, n.${NewsSchema.COL_TITLE}, n.${NewsSchema.COL_AUTHOR}, n.${NewsSchema.COL_PUBLISH_TIME},
                    COALESCE(c.${NewsSchema.COL_CONTENT_TEXT}, n.${NewsSchema.COL_CONTENT}) AS detail_content,
-                   n.${NewsSchema.COL_IMAGE_LOCAL_PATH}, n.${NewsSchema.COL_IMAGE_URL}
+                   n.${NewsSchema.COL_IMAGE_LOCAL_PATH}, n.${NewsSchema.COL_IMAGE_URL}, n.${NewsSchema.COL_VIDEO_URL}
             FROM ${NewsSchema.TABLE_NEWS} n
             LEFT JOIN ${NewsSchema.TABLE_NEWS_CONTENT} c ON n.${NewsSchema.COL_ID} = c.${NewsSchema.COL_NEWS_CONTENT_NEWS_ID}
             WHERE n.${NewsSchema.COL_ID} = ?
@@ -237,6 +239,7 @@ class NewsStore(
             val contentIndex = cursor.getColumnIndexOrThrow("detail_content")
             val localPathIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_LOCAL_PATH)
             val imageUrlIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_IMAGE_URL)
+            val videoUrlIndex = cursor.getColumnIndexOrThrow(NewsSchema.COL_VIDEO_URL)
 
             return NewsDetailsVO(
                 id = cursor.getString(idIndex),
@@ -246,7 +249,8 @@ class NewsStore(
                 content = cursor.getString(contentIndex),
                 comments = queryCommentsByNewsId(cursor.getString(idIndex)),
                 imageLocalPath = cursor.getStringOrNull(localPathIndex),
-                imageUrl = cursor.getStringOrNull(imageUrlIndex)
+                imageUrl = cursor.getStringOrNull(imageUrlIndex),
+                videoUrl = cursor.getStringOrNull(videoUrlIndex)
             )
         }
     }
@@ -357,6 +361,7 @@ class NewsStore(
             put(NewsSchema.COL_CONTENT, content)
             put(NewsSchema.COL_IMAGE_LOCAL_PATH, imageLocalPath)
             put(NewsSchema.COL_IMAGE_URL, imageUrl)
+            put(NewsSchema.COL_VIDEO_URL, videoUrl)
         }
     }
 
@@ -370,7 +375,8 @@ class NewsStore(
             content = content,
             comments = comments,
             imageLocalPath = imageLocalPath,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            videoUrl = videoUrl
         )
     }
 

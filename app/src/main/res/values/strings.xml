@@ -10,6 +10,10 @@
     <string name="submission_hint_content">正文内容（必填）</string>
     <string name="submission_hint_local_path">图片本地路径（可选）</string>
     <string name="submission_hint_image_url">图片 URL（可选）</string>
+    <string name="submission_hint_video_url">视频 URL（可选，仅支持 http/https）</string>
+    <string name="submission_action_preview_video">预览视频</string>
+    <string name="submission_invalid_video_url">视频链接格式不正确</string>
+    <string name="video_preview_failed">视频预览失败，请检查链接</string>
     <string name="submission_action_submit_review">提交审核</string>
     <string name="submission_validation_required">请先填写标题、作者和正文</string>
     <string name="submission_confirm_title">确认提交</string>
@@ -25,6 +29,8 @@
     <string name="comment_publish_success">评价发布成功</string>
     <string name="comment_publish_failed">评价发布失败，请稍后重试</string>
     <string name="comment_avatar_desc">用户头像</string>
+    <string name="news_video_tag">视频</string>
+    <string name="news_video_desc">新闻视频</string>
 
     <string name="tab_news">新闻</string>
     <string name="tab_user">我的</string>

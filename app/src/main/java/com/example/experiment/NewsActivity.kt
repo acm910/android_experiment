@@ -1,11 +1,15 @@
 package com.example.experiment
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.MediaController
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.VideoView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -17,11 +21,16 @@ import com.example.experiment.adapter.CommentAdapter
 import com.example.experiment.data.NewsDbHelper
 import com.example.experiment.data.NewsMockData
 import com.example.experiment.pojo.VO.NewsDetailsVO
+import androidx.core.net.toUri
+import androidx.core.view.isVisible
 
 /**
  * 新闻详情页：优先按 newsId 从数据库读取，并支持评论发布与下拉刷新。
  */
 class NewsActivity : AppCompatActivity() {
+    private var currentVideoUrl: String? = null
+    private var lastVideoPositionMs: Int = 0
+    private var shouldResumeVideo = false
 
     companion object {
         const val EXTRA_NEWS_ID = "extra_news_id"
@@ -51,6 +60,8 @@ class NewsActivity : AppCompatActivity() {
         val authorView = findViewById<TextView>(R.id.tvNewsAuthor)
         val timeView = findViewById<TextView>(R.id.tvNewsTime)
         val bodyView = findViewById<TextView>(R.id.tvNewsBody)
+        val videoContainer = findViewById<FrameLayout>(R.id.newsVideoContainer)
+        val newsVideoView = findViewById<VideoView>(R.id.vvNewsVideo)
         val commentInput = findViewById<EditText>(R.id.etCommentInput)
         val publishButton = findViewById<Button>(R.id.btnPublishComment)
         val commentsEmptyView = findViewById<TextView>(R.id.tvCommentsEmpty)
@@ -60,11 +71,17 @@ class NewsActivity : AppCompatActivity() {
         commentsRecyclerView.layoutManager = LinearLayoutManager(this)
         commentsRecyclerView.adapter = commentAdapter
 
+        MediaController(this).also {
+            it.setAnchorView(newsVideoView)
+            newsVideoView.setMediaController(it)
+        }
+
         fun bindDetails(item: NewsDetailsVO) {
             titleView.text = item.title
             authorView.text = "作者: ${item.author}"
             timeView.text = "时间: ${item.publishTime}"
             bodyView.text = item.content
+            bindVideo(item.videoUrl, videoContainer, newsVideoView)
         }
 
         fun loadComments() {
@@ -123,5 +140,80 @@ class NewsActivity : AppCompatActivity() {
     private fun getNewsDetailsFromIntent(): NewsDetailsVO? {
         // 兼容旧的对象透传方式，避免历史跳转参数失效。
         return intent.getSerializableExtra(EXTRA_NEWS_DETAILS, NewsDetailsVO::class.java)
+    }
+
+    private fun bindVideo(videoUrl: String?, container: FrameLayout, videoView: VideoView) {
+        val normalizedUrl = videoUrl?.trim().orEmpty()
+        if (normalizedUrl.isBlank()) {
+            currentVideoUrl = null
+            container.visibility = FrameLayout.GONE
+            videoView.stopPlayback()
+            return
+        }
+
+        val uri = normalizedUrl.toUri()
+        val scheme = uri.scheme?.lowercase()
+        if ((scheme != "http" && scheme != "https") || uri.host.isNullOrBlank()) {
+            currentVideoUrl = null
+            container.visibility = FrameLayout.GONE
+            videoView.stopPlayback()
+            return
+        }
+
+        if (currentVideoUrl == normalizedUrl && container.isVisible) {
+            return
+        }
+
+        currentVideoUrl = normalizedUrl
+        lastVideoPositionMs = 0
+        shouldResumeVideo = false
+        container.visibility = FrameLayout.VISIBLE
+        videoView.setVideoURI(uri)
+        videoView.setOnPreparedListener { mediaPlayer ->
+            mediaPlayer.isLooping = false
+            if (lastVideoPositionMs > 0) {
+                videoView.seekTo(lastVideoPositionMs)
+            }
+            if (shouldResumeVideo || lastVideoPositionMs == 0) {
+                videoView.start()
+                shouldResumeVideo = false
+            }
+        }
+        videoView.setOnErrorListener { _, _, _ ->
+            currentVideoUrl = null
+            container.visibility = FrameLayout.GONE
+            videoView.stopPlayback()
+            Toast.makeText(this, R.string.video_preview_failed, Toast.LENGTH_SHORT).show()
+            true
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val videoView = findViewById<VideoView>(R.id.vvNewsVideo)
+        if (videoView.isPlaying) {
+            shouldResumeVideo = true
+            lastVideoPositionMs = videoView.currentPosition
+            videoView.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val videoView = findViewById<VideoView>(R.id.vvNewsVideo)
+        if (shouldResumeVideo && !currentVideoUrl.isNullOrBlank()) {
+            videoView.seekTo(lastVideoPositionMs)
+            videoView.start()
+            shouldResumeVideo = false
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val videoView = findViewById<VideoView>(R.id.vvNewsVideo)
+        if (!currentVideoUrl.isNullOrBlank()) {
+            lastVideoPositionMs = videoView.currentPosition
+        }
+        videoView.pause()
     }
 }

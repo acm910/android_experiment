@@ -28,6 +28,7 @@ class NewsAdapter(
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val item = items[position]
         holder.titleTextView.text = item.title
+        holder.videoTagView.visibility = if (item.videoUrl.isNullOrBlank()) View.GONE else View.VISIBLE
         holder.contentTextView.text = item.content
         holder.thumbImageView.load(resolveImageModel(holder, item)) {
             crossfade(true)
@@ -103,6 +104,7 @@ class NewsAdapter(
      */
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.tvTitle)
+        val videoTagView: TextView = itemView.findViewById(R.id.tvVideoTag)
         val contentTextView: TextView = itemView.findViewById(R.id.tvContent)
         val thumbImageView: ImageView = itemView.findViewById(R.id.ivNewsThumb)
         val dividerView: View = itemView.findViewById(R.id.itemDivider)

@@ -1,10 +1,14 @@
 package com.example.experiment
 
 import android.os.Bundle
+import android.net.Uri
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.MediaController
 import android.widget.Toast
+import android.widget.VideoView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +26,7 @@ import java.util.UUID
  */
 class SubmissionActivity : AppCompatActivity() {
     private lateinit var dbHelper: NewsDbHelper
+    private var mediaController: MediaController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // 初始化表单与提交交互。
@@ -42,7 +47,21 @@ class SubmissionActivity : AppCompatActivity() {
         val contentInput = findViewById<EditText>(R.id.etContent)
         val imageLocalPathInput = findViewById<EditText>(R.id.etImageLocalPath)
         val imageUrlInput = findViewById<EditText>(R.id.etImageUrl)
+        val videoUrlInput = findViewById<EditText>(R.id.etVideoUrl)
+        val previewVideoButton = findViewById<Button>(R.id.btnPreviewVideo)
+        val previewContainer = findViewById<FrameLayout>(R.id.videoPreviewContainer)
+        val previewVideoView = findViewById<VideoView>(R.id.vvSubmissionPreview)
         val submitButton = findViewById<Button>(R.id.btnSubmitReview)
+
+        mediaController = MediaController(this).also {
+            it.setAnchorView(previewVideoView)
+            previewVideoView.setMediaController(it)
+        }
+
+        previewVideoButton.setOnClickListener {
+            val videoUrl = videoUrlInput.text.toString().trim().ifBlank { null }
+            previewVideo(videoUrl, previewContainer, previewVideoView)
+        }
 
         submitButton.setOnClickListener {
             val title = titleInput.text.toString().trim()
@@ -51,9 +70,15 @@ class SubmissionActivity : AppCompatActivity() {
             val content = contentInput.text.toString().trim()
             val imageLocalPath = imageLocalPathInput.text.toString().trim().ifBlank { null }
             val imageUrl = imageUrlInput.text.toString().trim().ifBlank { null }
+            val videoUrl = videoUrlInput.text.toString().trim().ifBlank { null }
 
             if (title.isBlank() || author.isBlank() || content.isBlank()) {
                 Toast.makeText(this, R.string.submission_validation_required, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!videoUrl.isNullOrBlank() && !isValidNetworkVideoUrl(videoUrl)) {
+                Toast.makeText(this, R.string.submission_invalid_video_url, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -70,7 +95,8 @@ class SubmissionActivity : AppCompatActivity() {
                         content = content,
                         comments = emptyList(),
                         imageLocalPath = imageLocalPath,
-                        imageUrl = imageUrl
+                        imageUrl = imageUrl,
+                        videoUrl = videoUrl
                     )
 
                     handleSubmit(previewNewsDetailsVO)
@@ -79,8 +105,11 @@ class SubmissionActivity : AppCompatActivity() {
                         authorInput,
                         contentInput,
                         imageLocalPathInput,
-                        imageUrlInput
+                        imageUrlInput,
+                        videoUrlInput
                     )
+                    previewVideoView.stopPlayback()
+                    previewContainer.visibility = View.GONE
                 }
                 .show()
         }
@@ -98,7 +127,8 @@ class SubmissionActivity : AppCompatActivity() {
                 content = details.content,
                 comments = details.comments,
                 imageLocalPath = details.imageLocalPath,
-                imageUrl = details.imageUrl
+                imageUrl = details.imageUrl,
+                videoUrl = details.videoUrl
             )
         )
 
@@ -123,5 +153,41 @@ class SubmissionActivity : AppCompatActivity() {
 
     private fun currentPublishTime(): String {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+    }
+
+    private fun previewVideo(videoUrl: String?, container: FrameLayout, videoView: VideoView) {
+        if (videoUrl.isNullOrBlank()) {
+            container.visibility = View.GONE
+            videoView.stopPlayback()
+            return
+        }
+        if (!isValidNetworkVideoUrl(videoUrl)) {
+            Toast.makeText(this, R.string.submission_invalid_video_url, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        container.visibility = View.VISIBLE
+        videoView.setVideoURI(Uri.parse(videoUrl))
+        videoView.setOnPreparedListener { mediaPlayer ->
+            mediaPlayer.isLooping = true
+            videoView.start()
+        }
+        videoView.setOnErrorListener { _, _, _ ->
+            container.visibility = View.GONE
+            Toast.makeText(this, R.string.video_preview_failed, Toast.LENGTH_SHORT).show()
+            true
+        }
+        videoView.requestFocus()
+    }
+
+    private fun isValidNetworkVideoUrl(url: String): Boolean {
+        val parsed = Uri.parse(url)
+        val scheme = parsed.scheme?.lowercase()
+        return (scheme == "http" || scheme == "https") && !parsed.host.isNullOrBlank()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        findViewById<VideoView>(R.id.vvSubmissionPreview).stopPlayback()
     }
 }
